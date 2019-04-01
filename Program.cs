@@ -12,6 +12,9 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
+            // Ask for userinput to select problem 1-25
+            // Select Test Input or Input
+            
             // Day 1
             // Console.WriteLine(Day1.Part1(ReadFile("Input/Problem1.txt")));
             // Console.WriteLine(Day1.Part2(ReadFile("Input/Problem1.txt")));
@@ -25,15 +28,17 @@ namespace AdventOfCode
             // Console.WriteLine(Day3.Part2(ReadFile("Input/Problem3.txt")));
 
             // Day 4
-            Console.WriteLine(Day4.Part1(ReadFile("Input/Problem4.txt")));
-            //Console.WriteLine(Day4.Part2(ReadFile("Input/Problem4.txt")));
+            // Console.WriteLine(Day4.Part1(ReadFile("Input/Problem4.txt")));
+            // Console.WriteLine(Day4.Part2(ReadFile("Input/Problem4.txt")));
 
             // Day 5
             // Console.WriteLine(Day5.Part1(ReadFile("Input/Problem5.txt")));
             // Console.WriteLine(Day5.Part2(ReadFile("Input/Problem5.txt")));
+            // Console.WriteLine(Day5.Part1(ReadFile("TestInput/Problem5.txt")));
+            // Console.WriteLine(Day5.Part2(ReadFile("TestInput/Problem5.txt")));
 
             // Day 6
-            // Console.WriteLine(Day6.Part1(ReadFile("Input/Problem6.txt")));
+            Console.WriteLine(Day6.Part1(ReadFile("TestInput/Problem6.txt")));
             // Console.WriteLine(Day6.Part2(ReadFile("Input/Problem6.txt")));
 
             // Day 7

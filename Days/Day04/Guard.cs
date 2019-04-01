@@ -12,6 +12,7 @@ namespace AdventOfCode
         public List<Action> Action {get;set;}
 
         public int Minute {get;set;}
+        public int ActualMinute {get;set;}
         public int TotalMinutesSlept {get;set;}
 
         public Guard(string Input)

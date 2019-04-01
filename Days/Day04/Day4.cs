@@ -99,7 +99,84 @@ namespace AdventOfCode
         // What is the ID of the guard you chose multiplied by the minute you chose?
         public static int Part2(IEnumerable<string> FileInput)
         {
-            return -1;
+            // Create List of all inputs and sort by DateTime
+            List<string> File = FileInput.OrderBy(l => DateTime.ParseExact(l.Substring(1, 16), "yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture)).ToList();
+            
+            // Create List of Guards
+            List<Guard> Guards = new List<Guard>();
+            
+            // Create a guard and set it to null because error is through without instantiation
+            Guard guard = null;
+            Action action;
+
+            // Loop through all lines in the list
+            foreach(string Line in File)
+            {
+                // Check for the string guard and create a new guard
+                if(Line.Substring(19, 5) == "Guard")
+                {
+                    // Create a new guard but only add the guard if it does no exist
+                    guard = new Guard(Line);
+                    bool GuardExists = Guards.Any(id => id.GuardID == guard.GuardID);
+                    if(!GuardExists)
+                    {
+                        Guards.Add(guard);
+                    }
+                }
+                else
+                {
+                    // Add action to the specific guard
+                    action = new Action(Line);
+                    guard = Guards.Single(id => id.GuardID == guard.GuardID);
+                    guard.AddAction(action);
+                }
+            }
+
+            // Create and populate dictionary for 60 minutes
+            Dictionary<int, int> MinuteCounter = new Dictionary<int, int>();
+            for(int minute = 0; minute < 60; minute++)
+            {
+                MinuteCounter.Add(minute, 0);
+            }
+
+            // Loop through all the guards
+            for(int i = 0; i < Guards.Count; i++)
+            {
+                // Loop through all the actions in every guard
+                for(int j = 0; j < Guards[i].Action.Count; j += 2)
+                {
+                    // Loop the the total time spent sleeping and awake added to minutes counter
+                    // MinuteCount - The time the guard went to sleep
+                    // Guards[i].Action[j + 1].Date.Minute - Time woke up.
+                    // Eg. 6/23/1518 12:33:00 AM - 6/23/1518 12:27:00 AM
+                    // Loop = 27 < 33
+                    for(int MinuteCount = Guards[i].Action[j].Date.Minute; MinuteCount < Guards[i].Action[j + 1].Date.Minute; MinuteCount++)
+                    {
+                        MinuteCounter[MinuteCount]++;
+                    }
+                }
+
+                // Gets the Minute which is the most common minute and gets the ActualMinute which is the minute of th most common minute.
+                foreach(var y in MinuteCounter)
+                {
+                    if(Guards[i].Minute < y.Value)
+                    {
+                        Guards[i].Minute = y.Value;
+                        Guards[i].ActualMinute = y.Key;
+                    }
+                }
+
+                // Reset all values in MinuteCounter to 0
+                for(int minute = 0; minute < 60; minute++)
+                {
+                    MinuteCounter[minute] = 0;
+                }
+            }
+
+            // Get the ID and Minute and return them multiplied by each other
+            int ID = int.Parse(Guards.Aggregate((x1, x2) => x1.Minute > x2.Minute ? x1 : x2).GuardID);
+            int MaxMinutes = Guards.Aggregate((x1, x2) => x1.Minute > x2.Minute ? x1 : x2).ActualMinute;
+            return ID * MaxMinutes;
         }
     }
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace AdventOfCode
 {
     public class Point
@@ -9,6 +11,16 @@ namespace AdventOfCode
         {
             X = x;
             Y = y;
+        }
+        public int Taxicab(Point Point2)
+        {
+            int Answer = Math.Abs(this.X - Point2.X) + Math.Abs(this.Y - Point2.Y);
+            Console.WriteLine($"|{this.X} - {Point2.X}| + |{this.Y} - {Point2.Y}| = {Answer}");
+            return Answer;
+        }
+        public string Print()
+        {
+            return $"({X}, {Y})";
         }
     }
 }
