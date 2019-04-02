@@ -55,7 +55,7 @@ namespace AdventOfCode
             List<char> CharFile = new List<char>();
 
             // Create a Variable to keep track of the smallest variable
-            int SmallestValue = 100000;
+            int SmallestValue = int.MaxValue;
 
             // Loop through all letters A-Z
             for(int Letter = 0; Letter < 26; Letter++)

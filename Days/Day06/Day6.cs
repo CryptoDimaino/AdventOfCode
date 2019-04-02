@@ -1,59 +1,116 @@
+    
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace AdventOfCode
 {
     public static class Day6
     {
-        // What is the size of the largest area that isn't infinite?
+        // What is the size of the largest TotalArea that isn't infinite?
         public static int Part1(IEnumerable<string> FileInput)
         {
-            // CreateListOfSpecificPoints
-            List<Point> Cordinates = new List<Point>();
+            // Create a List of Point's
+            List<Point> Points = new List<Point>();
 
-            
-
-            foreach(var Line in FileInput)
+            // Loop through the file and add a point every line
+            foreach(string Input in FileInput)
             {
-                string[] Input = Line.Split(',');
-                Cordinates.Add(new Point(int.Parse(Input[0]), int.Parse(Input[1])));
+                Points.Add(new Point(int.Parse(Input.Substring(0, Input.IndexOf(','))), int.Parse(Input.Substring(Input.IndexOf(',') + 1))));
             }
 
+            // X and Y Max for Array of Point's
+            int MaxX = Points.Max(point => point.X);
+            int MaxY = Points.Max(point => point.Y);
+
+            // X and Y Min for Array of Point's
+            int MinX = Points.Min(point => point.X);
+            int MinY = Points.Min(point => point.Y);
+
+            // The total area of the grid
+            int[,] TotalArea = new int[MaxX, MaxY];
             
-
-            int MaxX = Cordinates.Max(point => point.X);
-            int MaxY = Cordinates.Max(point => point.Y);
-
-            int MinX = Cordinates.Min(point => point.X);
-            int MinY = Cordinates.Min(point => point.Y);
-            
-            var GraphPoints = new int[MaxX,MaxY];
-
-            for(int x = 0; x < MaxX; x++)
+            // Loop through all values in a range of the total area
+            for(int X = MinX; X < MaxX; X++)
             {
-                for(int y = 0; y < MaxY; y++)
+                for(int Y = MinY; Y < MaxY; Y++)
                 {
-                    Console.Write(GraphPoints[x,y]);
+                    // Create a max value to grab the lowest distance
+                    int NearestPoint = int.MaxValue;
+
+                    // Used to tell if the points are the same in which case they are not counted
+                    int Index = -1;
+
+                    // Loop throuugh each plotted point's 
+                    for(int Point = 0; Point < Points.Count; Point++)
+                    {
+                        // Create new point and use the Taxicab formula to find the distance
+                        Point TempPoint = new Point(X, Y);
+                        int Distance = Points[Point].Taxicab(TempPoint);
+
+                        // Test to see if the new calcualted distance is smaller than the nearest point
+                        // else if - Don't allow the same distance to make a new nearest point.
+                        if(Distance < NearestPoint)
+                        {
+                            Index = Point;
+                            NearestPoint = Distance;
+                        }
+                        else if(Distance == NearestPoint)
+                        {
+                            Index = -1;
+                        }
+                    }
+                    // Give an index value to every X and Y point to identify which point is closest
+                    TotalArea[X, Y] = Index;
                 }
-                Console.WriteLine();
             }
 
-
-            Console.WriteLine($"Max X: {MaxX} Max Y: {MaxY} Min X: {MinX} Min Y: {MinY}");
-            // for(int i = 0; i < Cordinates.Count; i++)
-            // {
-            //     for(int j = 0; j < Cordinates.Count; j++)
-            //     {
-            //         Cordinates[i].Taxicab(Cordinates[j]);
-            //     }
-            //     Console.WriteLine();
-            // }
+            // Count they area of all the points
+            int[] PointsCount = new int[Points.Count];
+            for(int X = MinX; X < MaxX; X++)
+            {
+                for(int Y = MinY; Y < MaxY; Y++)
+                {
+                    // Make sure the area doesn't have an area of -1 because they are not counted
+                    if(TotalArea[X, Y] != -1)
+                    {
+                        PointsCount[TotalArea[X, Y]]++;
+                    }
+                }
+            }
             
-            return -1;
+            // The last 2 loops are used to make sure the view is a partial view
+            // Loop through all X cordinates
+            // Change all the Y = 0; and Y = MaxY - 1; To -1
+            for(int X = MinX; X < MaxX; X++)
+            {
+                if(TotalArea[X, 0] != -1)
+                {
+                    PointsCount[TotalArea[X, 0]] = -1;
+                }
+                if(TotalArea[X, MaxY - 1] != -1)
+                {
+                    PointsCount[TotalArea[X, MaxY - 1]] = -1;
+                }
+            }
+
+            // Remove all the X = 0; and Y = MaxX - 1; To -1
+            for(int Y = MinY; Y < MaxY; Y++)
+            {
+                if(TotalArea[0, Y] != -1)
+                {
+                    PointsCount[TotalArea[0, Y]] = -1;
+                }
+                if(TotalArea[MaxX - 1, Y] != -1)
+                {
+                    PointsCount[TotalArea[MaxX - 1, Y]] = -1;
+                }
+            }
+            return PointsCount.Max(val => val);
         }
 
         public static int Part2(IEnumerable<string> FileInput)

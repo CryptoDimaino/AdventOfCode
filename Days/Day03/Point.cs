@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AdventOfCode
 {
@@ -15,7 +16,6 @@ namespace AdventOfCode
         public int Taxicab(Point Point2)
         {
             int Answer = Math.Abs(this.X - Point2.X) + Math.Abs(this.Y - Point2.Y);
-            Console.WriteLine($"|{this.X} - {Point2.X}| + |{this.Y} - {Point2.Y}| = {Answer}");
             return Answer;
         }
         public string Print()
