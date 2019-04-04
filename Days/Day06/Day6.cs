@@ -113,9 +113,49 @@ namespace AdventOfCode
             return PointsCount.Max(val => val);
         }
 
+        // What is the size of the region containing all locations which have a total distance to all given coordinates of less than 10000?
         public static int Part2(IEnumerable<string> FileInput)
         {
-            return -1;
+            // Create a List of Point's
+            List<Point> Points = new List<Point>();
+
+            // Loop through the file and add a point every line
+            foreach(string Input in FileInput)
+            {
+                Points.Add(new Point(int.Parse(Input.Substring(0, Input.IndexOf(','))), int.Parse(Input.Substring(Input.IndexOf(',') + 1))));
+            }
+
+            // X and Y Max for Array of Point's
+            int MaxX = Points.Max(point => point.X);
+            int MaxY = Points.Max(point => point.Y);
+
+            // X and Y Min for Array of Point's
+            int MinX = Points.Min(point => point.X);
+            int MinY = Points.Min(point => point.Y);
+
+            int RegionSize = 0;
+
+            // Loop through all values in a range of the the Points Min and Max for X and Y
+            for(int X = MinX; X <= MaxX; X++)
+            {
+                for(int Y = MinY; Y <= MaxY; Y++)
+                {
+                    int DistanceSum = 0;
+                    foreach(var Point in Points)
+                    {
+                        // Create new point and use the Taxicab formula to find the distance
+                        // Add to a DistanceSum to check what the the total distance is to each point.
+                        Point TempPoint = new Point(X, Y);
+                        DistanceSum += Point.Taxicab(TempPoint);
+                    }
+                    // Check if the total distance to the points is less than 10000
+                    if(DistanceSum < 10000)
+                    {
+                        RegionSize++;
+                    }
+                }
+            }
+            return RegionSize;
         }
     }
 }
